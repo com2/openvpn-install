@@ -404,7 +404,9 @@ WantedBy=multi-user.target" >> /etc/systemd/system/openvpn-iptables.service
 		semanage port -a -t openvpn_port_t -p "$protocol" "$port"
 	fi
 	# If the server is behind NAT, use the correct IP address
-	[[ -n "$public_ip" ]] && ip="$public_ip"
+	[[ -n "$public_ip" ]] && ip="$public_ip"	
+	# If the server has a domain name pointer, use that instead
+	[[ $(host $ip) =~ ^(.*)( domain name pointer )(.*)\.$ ]] && ip="${BASH_REMATCH[3]}"
 	# client-common.txt is created so we have a template to add further users later
 	echo "client
 dev tun
